@@ -1,0 +1,22 @@
+name: Build and Push Odoo CE Image
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build Docker image
+        run: docker build -t ghcr.io/${{ github.repository_owner }}/odoo-ce:18.0 .
+
+      - name: Push image to GHCR
+        run: docker push ghcr.io/${{ github.repository_owner }}/odoo-ce:18.0
